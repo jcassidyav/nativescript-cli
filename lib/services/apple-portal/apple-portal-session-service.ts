@@ -80,17 +80,25 @@ export class ApplePortalSessionService implements IApplePortalSessionService {
 	}
 
 	public async createWebSession(
-		contentProviderId: number,
+		contentProviderId: string,
 		dsId: string
 	): Promise<string> {
 		const webSessionResponse = await this.$httpClient.httpRequest({
 			url:
-				"https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/v1/session/webSession",
+				"https://appstoreconnect.apple.com/olympus/v1/providerSwitchRequests",
 			method: "POST",
 			body: JSON.stringify({
-				contentProviderId,
-				dsId,
-				ipAddress: null,
+				data: {
+					type: "providerSwitchRequests",
+					relationships: {
+						provider: {
+							data: {
+								type: "providers",
+								id: contentProviderId,
+							},
+						},
+					},
+				},
 			}),
 			headers: {
 				Accept: "application/json, text/plain, */*",
@@ -132,7 +140,7 @@ export class ApplePortalSessionService implements IApplePortalSessionService {
 			try {
 				await this.loginCore(credentials);
 			} catch (err) {
-				const statusCode = err && err.response && err.response.statusCode;
+				const statusCode = err && err.response && err.response.status;
 				result.areCredentialsValid = statusCode !== 401 && statusCode !== 403;
 				result.isTwoFactorAuthenticationEnabled = statusCode === 409;
 
