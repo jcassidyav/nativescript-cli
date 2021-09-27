@@ -109,9 +109,9 @@ export class HttpClient implements Server.IHttpClient {
 		}
 
 		let data;
-		console.log("body", options);
+
 		if (options.body) {
-			data = JSON.parse(options.body);
+			data = options.body;
 		}
 
 		const result = await axios({

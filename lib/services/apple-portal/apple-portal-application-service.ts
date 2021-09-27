@@ -47,9 +47,9 @@ export class ApplePortalApplicationService
 			url:
 				"https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/apps/manageyourapps/summary/v2",
 			method: "GET",
-			body: JSON.stringify({
+			body: {
 				contentProviderId,
-			}),
+			},
 			headers: {
 				"Content-Type": "application/json",
 				Cookie: webSessionCookie,

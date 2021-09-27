@@ -87,7 +87,7 @@ export class ApplePortalSessionService implements IApplePortalSessionService {
 			url:
 				"https://appstoreconnect.apple.com/olympus/v1/providerSwitchRequests",
 			method: "POST",
-			body: JSON.stringify({
+			body: {
 				data: {
 					type: "providerSwitchRequests",
 					relationships: {
@@ -99,7 +99,7 @@ export class ApplePortalSessionService implements IApplePortalSessionService {
 						},
 					},
 				},
-			}),
+			},
 			headers: {
 				Accept: "application/json, text/plain, */*",
 				"Accept-Encoding": "gzip, deflate, br",
@@ -185,11 +185,11 @@ For more details how to set up your environment, please execute "tns publish ios
 			"X-Apple-Widget-Key": loginConfig.authServiceKey,
 			Accept: "application/json, text/javascript",
 		};
-		const body = JSON.stringify({
+		const body = {
 			accountName: credentials.username,
 			password: credentials.password,
 			rememberMe: true,
-		});
+		};
 
 		const loginResponse = await this.$httpClient.httpRequest({
 			url: loginUrl,
@@ -252,11 +252,11 @@ For more details how to set up your environment, please execute "tns publish ios
 			await this.$httpClient.httpRequest({
 				url: `https://idmsa.apple.com/appleauth/auth/verify/trusteddevice/securitycode`,
 				method: "POST",
-				body: JSON.stringify({
+				body: {
 					securityCode: {
 						code: token.toString(),
 					},
-				}),
+				},
 				headers: { ...headers, "Content-Type": "application/json" },
 			});
 
