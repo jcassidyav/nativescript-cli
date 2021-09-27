@@ -1,7 +1,7 @@
 import { ICredentials } from "../../common/declarations";
 
 interface IApplePortalSessionService {
-	createWebSession(contentProviderId: string, dsId: string): Promise<string>;
+	createWebSession(contentProviderId: string): Promise<string>;
 	createUserSession(
 		credentials: ICredentials,
 		opts?: IAppleCreateUserSessionOptions
@@ -19,8 +19,7 @@ interface IApplePortalApplicationService {
 		user: IApplePortalUserDetail
 	): Promise<IApplePortalApplicationSummary[]>;
 	getApplicationsByProvider(
-		contentProviderId: string,
-		dsId: string
+		contentProviderId: string
 	): Promise<IApplePortalApplication>;
 	getApplicationByBundleId(
 		user: IApplePortalUserDetail,

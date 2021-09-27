@@ -79,10 +79,7 @@ export class ApplePortalSessionService implements IApplePortalSessionService {
 		return result;
 	}
 
-	public async createWebSession(
-		contentProviderId: string,
-		dsId: string
-	): Promise<string> {
+	public async createWebSession(contentProviderId: string): Promise<string> {
 		const webSessionResponse = await this.$httpClient.httpRequest({
 			url:
 				"https://appstoreconnect.apple.com/olympus/v1/providerSwitchRequests",
