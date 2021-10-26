@@ -18,15 +18,14 @@ export class ProjectCleanupService implements IProjectCleanupService {
 	public async clean(pathsToClean: string[]): Promise<boolean> {
 		let result = true;
 		for (const pathToClean of pathsToClean) {
-			result =
-				result &&
-				(await this.cleanPath(pathToClean).catch((error) => {
-					this.$logger.trace(
-						`Encountered error while cleaning. Error is: ${error.message}.`,
-						error
-					);
-					return false;
-				}));
+			const isCleaned = await this.cleanPath(pathToClean).catch((error) => {
+				this.$logger.trace(
+					`Encountered error while cleaning. Error is: ${error.message}.`,
+					error
+				);
+				return false;
+			});
+			result = result && isCleaned;
 		}
 		return result;
 	}
