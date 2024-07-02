@@ -243,6 +243,7 @@ export class Options {
 				default: true,
 			},
 			dryRun: { type: OptionType.Boolean, hasSensitiveValue: false },
+			localSource: { type: OptionType.Boolean, hasSensitiveValue: false },
 		};
 	}
 

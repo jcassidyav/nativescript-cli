@@ -587,6 +587,7 @@ interface ITypingsOptions {
 	jar: string;
 	aar: string;
 	filter: string;
+	localSource: boolean;
 }
 
 interface IOptions

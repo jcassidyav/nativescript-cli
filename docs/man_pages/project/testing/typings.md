@@ -13,13 +13,14 @@ Generate iOS & Android typings by default (respecting platform support, so no io
 
 Usage | Synopsis
 ---|---
-Generate typings to Android | `$ ns typings android [--jar <Jar1> --jar <Jar2>] [--aar <Aar1>] [--copy-to <Path>]`
+Generate typings to Android | `$ ns typings android [--jar <Jar1> --jar <Jar2>] [--aar <Aar1>] [--copy-to <Path>] [--local-source]`
 Generate typings to iOS | `$ ns typings ios [--filter <Filter>] [--copy-to <Path>]`
 
 ### Options
 
 * `--jar` - Path to jar file to generate typings for (Supports multiple by passing them individually) (Android only)
 * `--aar` - Path to aar file to generate typings for (Currently unsupported) (Android only)
+* `--local-source` - Generate typings for java and kotlin source files hosted in this project (Android only)
 * `--filter` - Regex to filter typings (Currently unsupported) (iOS only)
 
 * `--copy-to` - Copy generated typings to the specified folder
