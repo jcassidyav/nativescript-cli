@@ -1235,6 +1235,7 @@ declare global {
 				emulatorId: string,
 				emulator: Mobile.IDeviceInfo
 			): void;
+			extractAndroidVersionFromDir(sysDir: string): string | null;
 		}
 
 		interface IDevicePlatformsConstants {

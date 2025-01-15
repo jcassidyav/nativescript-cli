@@ -3,6 +3,7 @@ import * as _ from "lodash";
 import { injector } from "../yok";
 
 export class EmulatorHelper implements Mobile.IEmulatorHelper {
+	private static ANDROID_API_VERSION_PATH_REGEX = /android-(\d{2})/; // Matches "android-" followed by 2 digits
 	// https://developer.android.com/guide/topics/manifest/uses-sdk-element
 	public mapAndroidApiLevelToVersion = {
 		"android-35": "15.0.0",
@@ -25,6 +26,13 @@ export class EmulatorHelper implements Mobile.IEmulatorHelper {
 		"android-18": "4.3.0",
 		"android-17": "4.2.2",
 	};
+	public extractAndroidVersionFromDir(sysDir: string): string | null {
+		if (sysDir) {
+			const match = sysDir.match(EmulatorHelper.ANDROID_API_VERSION_PATH_REGEX);
+			return match ? `android-${match[1]}` : null; // Return the match or null if not found
+		}
+		return null;
+	}
 
 	public getEmulatorsFromAvailableEmulatorsOutput(
 		availableEmulatorsOutput: Mobile.IListEmulatorsOutput

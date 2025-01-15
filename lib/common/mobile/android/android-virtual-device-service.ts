@@ -295,15 +295,112 @@ export class AndroidVirtualDeviceService
 	private get pathToAvdManagerExecutable(): string {
 		let avdManagerPath = null;
 		if (this.androidHome) {
-			avdManagerPath = path.join(
-				this.androidHome,
-				"tools",
-				"bin",
-				this.getExecutableName("avdmanager")
-			);
+			const executableName = this.getExecutableName("avdmanager");
+			const toolsHome = path.join(this.androidHome, "cmdline-tools");
+
+			if (this.$fs.exists(toolsHome)) {
+				const mapCmdlineToolsPath = (value: string) =>
+					path.join(toolsHome, value, "bin", executableName);
+
+				var dirs = this.$fs.readDirectory(toolsHome);
+
+				const withAvdManagerPath = this.sortSemanticDirectories(dirs).find(
+					(value) => this.$fs.exists(mapCmdlineToolsPath(value))
+				);
+				if (withAvdManagerPath) {
+					avdManagerPath = mapCmdlineToolsPath(withAvdManagerPath);
+				}
+			}
+			if (avdManagerPath == null || !this.$fs.exists(avdManagerPath)) {
+				avdManagerPath = path.join(
+					this.androidHome,
+					"tools",
+					"bin",
+					this.getExecutableName("avdmanager")
+				);
+			}
 		}
 
 		return avdManagerPath;
+	}
+
+	/**
+	 *
+	 * Sorts based on semantic like rules e.g. handles [16.0,16.0-alpha01,6.0,latest]
+	 *
+	 * Attempting to return in order.
+	 *
+	 * @param arr
+	 * @returns sorted list
+	 */
+	private sortSemanticDirectories(arr: string[]): string[] {
+		return arr
+			.sort((a, b) => {
+				// Helper function to extract numeric version and suffix
+				const parseVersion = (str: string) => {
+					// Handle strings that do not start with a number (e.g., alpha, beta, latest)
+					if (!/^\d/.test(str)) {
+						return {
+							number: Infinity,
+							hasSuffix: false,
+							isNumeric: false,
+							original: str,
+						};
+					}
+
+					// Split into numeric part and suffix (if any)
+					const match = str.match(/^(\d+(\.\d+)*)(?:-(.*))?$/);
+					if (match) {
+						// Extract the numeric part (e.g., 16.0)
+						const numericVersion = match[1];
+						const suffix = match[3] || "";
+
+						// Convert the numeric version to a float for comparison
+						const numericValue = parseFloat(numericVersion);
+						return {
+							number: numericValue,
+							hasSuffix: suffix.length > 0,
+							isNumeric: true,
+							original: str,
+						};
+					}
+
+					// If no valid number is found, treat it as a special string (NaN, non-numeric)
+					return {
+						number: NaN,
+						hasSuffix: false,
+						isNumeric: false,
+						original: str,
+					};
+				};
+
+				const versionA = parseVersion(a);
+				const versionB = parseVersion(b);
+
+				// First, sort by whether it's numeric or not
+				if (!versionA.isNumeric && versionB.isNumeric) {
+					return 1; // Non-numeric is greater than numeric
+				} else if (versionA.isNumeric && !versionB.isNumeric) {
+					return -1; // Numeric is greater than non-numeric
+				}
+
+				// Both are either numeric or non-numeric, compare numeric values
+				if (versionA.number !== versionB.number) {
+					// Sort by the numeric value
+					return versionA.number - versionB.number;
+				}
+
+				// If numeric versions are the same, compare based on suffixes
+				if (versionA.hasSuffix && !versionB.hasSuffix) {
+					return -1; // A with suffix comes after B without suffix
+				} else if (!versionA.hasSuffix && versionB.hasSuffix) {
+					return 1; // B with suffix comes after A without suffix
+				}
+
+				// If both are numeric and have or don't have suffixes, sort alphabetically
+				return versionA.original.localeCompare(versionB.original);
+			})
+			.reverse();
 	}
 
 	@cache()
@@ -425,6 +522,7 @@ export class AndroidVirtualDeviceService
 					case "Target":
 					case "Skin":
 					case "Sdcard":
+					case "Based on":
 						result[key.toLowerCase()] = value;
 						break;
 				}
