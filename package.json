@@ -28,7 +28,7 @@
     "preuninstall.js"
   ],
   "scripts": {
-    "clean": "npx rimraf node_modules package-lock.json && npm run setup",
+    "clean": "npx rimraf node_modules && npm run setup",
     "build": "grunt",
     "build.all": "grunt test",
     "dev": "tsc --watch",
@@ -56,9 +56,10 @@
   "dependencies": {
     "@foxt/js-srp": "0.0.3-patch2",
     "@nativescript/doctor": "2.0.17",
+    "@nativescript/types-auto-src": "^0.0.1-alpha.6",
     "@npmcli/arborist": "9.1.4",
-    "@rigor789/resolve-package-path": "1.0.7",
     "@nstudio/trapezedev-project": "7.2.3",
+    "@rigor789/resolve-package-path": "1.0.7",
     "archiver": "7.0.1",
     "axios": "1.11.0",
     "byline": "5.0.0",
